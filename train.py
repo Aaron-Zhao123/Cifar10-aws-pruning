@@ -409,19 +409,19 @@ def main(argv = None):
             # model_name = '/root/data/pruning.pkl'
             # mask_dir = '/root/data/mask.pkl'
             base_model_name = '/root/20170206.pkl'
-            model_name = '/root/pruning.pkl'
-            mask_dir = '/root/mask.pkl'
+            model_name = '/root/pruning'
+            mask_dir = '/root/mask'
         else:
-            mask_dir = './data/mask.pkl'
+            mask_dir = './data/mask'
             base_model_name = './data/20170206.pkl'
-            model_name = './data/pruning.pkl'
+            model_name = './data/pruning'
         # model_name = 'test.pkl'
         # model_name = '../tf_official_docker/tmp.pkl'
         PREV_MODEL_EXIST = 1
 
 
         # cls_train returns as an integer, labels is the array
-        weights_mask = initialize_weights_mask(pruning_number, mask_dir+'v'+str(pruning_number-1))
+        weights_mask = initialize_weights_mask(pruning_number, mask_dir+'v'+str(pruning_number-1)+'.pkl')
         cifar10.maybe_download_and_extract()
         class_names = cifar10.load_class_names()
         images_train, cls_train, labels_train = cifar10.load_training_data()
@@ -436,7 +436,7 @@ def main(argv = None):
         if (pruning_number == 0):
             weights, biases = initialize_variables(PREV_MODEL_EXIST, base_model_name)
         else:
-            weights, biases = initialize_variables(PREV_MODEL_EXIST, model_name+'v'+str(pruning_number-1))
+            weights, biases = initialize_variables(PREV_MODEL_EXIST, model_name+'v'+str(pruning_number-1)+'.pkl')
 
         x = tf.placeholder(tf.float32, [None, 32, 32, 3])
         y = tf.placeholder(tf.float32, [None, NUM_CLASSES])
@@ -539,7 +539,7 @@ def main(argv = None):
                             print('test accuracy is {}'.format(test_acc))
                             if (test_acc > 0.8):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
-                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1))
+                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1)+'.pkl')
                                 break
                             else:
                                 pass
@@ -556,7 +556,7 @@ def main(argv = None):
                 print("test accuracy is {}".format(test_acc))
                 # save_pkl_model(weights, biases, model_name)
             print('saving pruned model ...')
-            save_pkl_model(weights, biases, model_name+'v'+str(pruning_number))
+            save_pkl_model(weights, biases, model_name+'v'+str(pruning_number)+'.pkl')
             return test_acc
     except Usage, err:
         print >> sys.stderr, err.msg
