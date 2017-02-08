@@ -128,7 +128,7 @@ def prune_weights(percent, weights, weights_mask, mask_dir):
 def initialize_weights_mask(first_time_training, mask_dir):
     NUM_CHANNELS = 3
     NUM_CLASSES = 10
-    if (first_time_training == True):
+    if (first_time_training == 0):
         print('setting initial mask value')
         weights_mask = {
             'cov1': np.ones([5, 5, NUM_CHANNELS, 64]),
@@ -421,7 +421,7 @@ def main(argv = None):
 
 
         # cls_train returns as an integer, labels is the array
-        weights_mask = initialize_weights_mask(pruning_number == 0, mask_dir)
+        weights_mask = initialize_weights_mask(pruning_number, mask_dir+'v'+str(pruning_number-1))
         cifar10.maybe_download_and_extract()
         class_names = cifar10.load_class_names()
         images_train, cls_train, labels_train = cifar10.load_training_data()
@@ -539,7 +539,7 @@ def main(argv = None):
                             print('test accuracy is {}'.format(test_acc))
                             if (test_acc > 0.8):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
-                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir)
+                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1))
                                 break
                             else:
                                 pass
