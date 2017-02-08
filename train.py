@@ -557,6 +557,8 @@ def main(argv = None):
                 # save_pkl_model(weights, biases, model_name)
             print('saving pruned model ...')
             save_pkl_model(weights, biases, model_name+'v'+str(pruning_number)+'.pkl')
+            if (pruning_number == 0):
+                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1)+'.pkl')
             return test_acc
     except Usage, err:
         print >> sys.stderr, err.msg
