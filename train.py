@@ -507,7 +507,7 @@ def main(argv = None):
             print(78*'-')
             start = time.time()
             if TRAIN == 1:
-                for i in range(0,30000):
+                for i in range(0,3000):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
@@ -515,8 +515,9 @@ def main(argv = None):
                                     keep_prob: 1.0})
                     if (i % DISPLAY_FREQ == 0):
                         # prune_info(weights, 0)
-                        print('This is the {}th iteration, time is {}'.format(
+                        print('This is the {}th iteration of {} pruning, time is {}'.format(
                             i,
+                            pruning_number,
                             time.time() - start
                         ))
                         print("accuracy is {} and cross entropy is {}".format(
