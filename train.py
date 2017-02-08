@@ -539,7 +539,7 @@ def main(argv = None):
                             print('test accuracy is {}'.format(test_acc))
                             if (test_acc > 0.8):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
-                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1)+'.pkl')
+                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
                                 break
                             else:
                                 pass
@@ -558,7 +558,7 @@ def main(argv = None):
             print('saving pruned model ...')
             save_pkl_model(weights, biases, model_name+'v'+str(pruning_number)+'.pkl')
             if (pruning_number == 0):
-                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number+1)+'.pkl')
+                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
             return test_acc
     except Usage, err:
         print >> sys.stderr, err.msg
