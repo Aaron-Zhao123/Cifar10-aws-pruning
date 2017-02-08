@@ -507,7 +507,7 @@ def main(argv = None):
             print(78*'-')
             start = time.time()
             if TRAIN == 1:
-                for i in range(0,100000):
+                for i in range(0,30000):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
@@ -537,7 +537,7 @@ def main(argv = None):
                             # accuracy_list = np.zeros(30)
                             accuracy_list = np.zeros(5)
                             print('test accuracy is {}'.format(test_acc))
-                            if (test_acc > 0.79):
+                            if (test_acc > 0.78):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
                                 prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
                                 break
