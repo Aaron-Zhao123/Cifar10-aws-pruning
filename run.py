@@ -9,7 +9,7 @@ import train
 # os.system('python training_v3.py -p5')
 
 acc_list = []
-count = 4
+count = 5
 while (count < 10):
     param = [
         ('-p',count)]

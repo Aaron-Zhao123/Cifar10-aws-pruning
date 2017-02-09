@@ -529,7 +529,8 @@ def main(argv = None):
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
                             save_pkl_model(weights, biases, model_name)
                             print("saved the network")
-                        if (np.mean(accuracy_list) > 0.79):
+                        # if (np.mean(accuracy_list) > 0.79):
+                        if (np.mean(train_acc) > 0.5):
                             print("training accuracy is large, show the list: {}".format(accuracy_list))
                             test_acc = sess.run(accuracy, feed_dict = {
                                                     x: images_test,
@@ -538,12 +539,9 @@ def main(argv = None):
                             # accuracy_list = np.zeros(30)
                             accuracy_list = np.zeros(5)
                             print('test accuracy is {}'.format(test_acc))
-                            if (test_acc > 0.78):
-                                print('Exiting the training, test accuracy is {}'.format(test_acc))
-                                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
-                                break
-                            else:
-                                pass
+                            print('Exiting the training, test accuracy is {}'.format(test_acc))
+                            prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
+                            break
                     _ = sess.run(train_step, feed_dict = {
                                     x: batch_x,
                                     y: batch_y,
