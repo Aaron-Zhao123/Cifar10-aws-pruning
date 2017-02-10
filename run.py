@@ -9,12 +9,20 @@ import train
 # os.system('python training_v3.py -p5')
 
 acc_list = []
-count = 5
-while (count < 10):
+count = 0
+pcov = 0
+pfc = 0
+retrain = 0
+while (count < 9):
     param = [
-        ('-p',count)]
+        ('-pcov',pcov),
+        ('-pfc',pfc)
+        ]
     acc = train.main(param)
-    print (acc)
+    pcov = pcov+10
+    pfc = pfc+10
     acc_list.append(acc)
+    retrain = 0
     count = count + 1
+    print (acc)
 print('accuracy summary: {}'.format(acc_list))

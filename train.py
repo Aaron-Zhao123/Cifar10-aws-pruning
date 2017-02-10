@@ -107,28 +107,37 @@ def initialize_variables(exist, file_name):
         biases = {
             'cov1': tf.Variable(tf.constant(0.1, shape=[64])),
             'cov2': tf.Variable(tf.constant(0.1, shape=[64])),
-            'cov2': tf.Variable(tf.constant(0.1, shape=[64])),
             'fc1': tf.Variable(tf.constant(0.1, shape=[384])),
             'fc2': tf.Variable(tf.constant(0.1, shape=[192])),
             'fc3': tf.Variable(tf.constant(0.0, shape=[NUM_CLASSES]))
         }
     return (weights, biases)
 
-def prune_weights(percent, weights, weights_mask, mask_dir):
-    keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
+def prune_weights(percent_cov, percent_fc, weights, weights_mask, mask_dir, biases, biases_mask):
+    keys_cov = ['cov1', 'cov2']
+    keys_fc = ['fc1', 'fc2', 'fc3']
     next_threshold = {}
-    for key in keys:
+    for key in keys_cov:
         weight = weights[key].eval()
-        threshold = np.percentile(np.abs(weight), percent)
+        biase = biases[key].eval()
+        threshold = np.percentile(np.abs(weight), percent_cov)
         weights_mask[key] = np.abs(weight) > threshold
-    print("Pruning done")
+        threshold = np.percentile(np.abs(biase),percent_cov)
+        biases_mask[key] = np.abs(biase) > threshold
+    for key in keys_fc:
+        weight = weights[key].eval()
+        biase = biases[key].eval()
+        threshold = np.percentile(np.abs(weight), percent_fc)
+        weights_mask[key] = np.abs(weight) > threshold
+        threshold = np.percentile(np.abs(biase),percent_fc)
+        biases_mask[key] = np.abs(biase) > threshold
     with open(mask_dir, 'wb') as f:
-        pickle.dump(weights_mask, f)
+        pickle.dump((weights_mask,biases_mask), f)
 
 def initialize_weights_mask(first_time_training, mask_dir):
     NUM_CHANNELS = 3
     NUM_CLASSES = 10
-    if (first_time_training == 0):
+    if (first_time_training == 1):
         print('setting initial mask value')
         weights_mask = {
             'cov1': np.ones([5, 5, NUM_CHANNELS, 64]),
@@ -137,10 +146,17 @@ def initialize_weights_mask(first_time_training, mask_dir):
             'fc2': np.ones([384, 192]),
             'fc3': np.ones([192, NUM_CLASSES])
         }
+        biases_mask = {
+            'cov1': np.ones([64]),
+            'cov2': np.ones([64]),
+            'fc1': np.ones([384]),
+            'fc2': np.ones([192]),
+            'fc3': np.ones([NUM_CLASSES])
+        }
     else:
         with open(mask_dir,'rb') as f:
-            weights_mask = pickle.load(f)
-    return weights_mask
+            (weights_mask, biases_mask) = pickle.load(f)
+    return (weights_mask, biases_mask)
 
 def prune_info(weights, counting):
     if (counting == 0):
@@ -349,7 +365,7 @@ def pre_process(images, training):
     images = tf.map_fn(lambda image: pre_process_image(image, training), images)
     return images
 
-def mask_gradients(weights, grads_and_names, weight_masks):
+def mask_gradients(weights, grads_and_names, weight_masks, biases, biases_mask):
     new_grads = []
     keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
     for grad,var_name in grads_and_names:
@@ -357,8 +373,11 @@ def mask_gradients(weights, grads_and_names, weight_masks):
         index = 0
         for key in keys:
             if (weights[key]== var_name):
-                # print(key, weights[key].name, var_name)
                 mask = weight_masks[key]
+                new_grads.append((tf.multiply(tf.constant(mask, dtype = tf.float32),grad),var_name))
+                flag = 1
+            if (weights[key]== var_name):
+                mask = biases_mask[key]
                 new_grads.append((tf.multiply(tf.constant(mask, dtype = tf.float32),grad),var_name))
                 flag = 1
         # if flag is not set
@@ -381,9 +400,11 @@ def main(argv = None):
                 print (item)
                 opt = item[0]
                 val = item[1]
-                if (opt == '-p'):
-                    pruning_number = val
-            print('pruning count is {}'.format(pruning_number))
+                if (opt == '-pcov'):
+                    pruning_cov = val
+                if (opt == '-pfc'):
+                    pruning_fc = val
+            print('pruning count is {}, {}'.format(pruning_cov, pruning_fc))
         except getopt.error, msg:
             raise Usage(msg)
         NUM_CLASSES = 10
@@ -421,7 +442,13 @@ def main(argv = None):
 
 
         # cls_train returns as an integer, labels is the array
-        weights_mask = initialize_weights_mask(pruning_number, mask_dir+'v'+str(pruning_number-1)+'.pkl')
+        if (pruning_fc == 0 and pruning_cov == 0):
+            print("It's first time loading!")
+            first_time_load = 1
+        else:
+            first_time_load = 0
+        print('pruning on cov is {}. on fc is {}'.format(pruning_cov, pruning_fc))
+        (weights_mask,biases_mask)= initialize_weights_mask(first_time_load, mask_dir+'v'+str(pruning_cov-10) + str(pruning_fc-10)+'.pkl')
         cifar10.maybe_download_and_extract()
         class_names = cifar10.load_class_names()
         images_train, cls_train, labels_train = cifar10.load_training_data()
@@ -433,20 +460,21 @@ def main(argv = None):
 
         training_data_list = []
 
-        if (pruning_number == 0):
+        if (first_time_load == 1):
             weights, biases = initialize_variables(PREV_MODEL_EXIST, base_model_name)
         else:
-            weights, biases = initialize_variables(PREV_MODEL_EXIST, model_name+'v'+str(pruning_number-1)+'.pkl')
+            weights, biases = initialize_variables(PREV_MODEL_EXIST, model_name+'v'+str(pruning_cov-10) + str(pruning_fc-10)+'.pkl')
 
         x = tf.placeholder(tf.float32, [None, 32, 32, 3])
         y = tf.placeholder(tf.float32, [None, NUM_CLASSES])
 
-        if (pruning_number == 0):
+        if (first_time_load == 1):
             TRAIN = 0
         if (TRAIN == 1):
             TRAIN_OR_TEST = 1
         else:
             TRAIN_OR_TEST = 0
+
         keep_prob = tf.placeholder(tf.float32)
         images = pre_process(x, TRAIN_OR_TEST)
         # images = pre_process(x, 1)
@@ -476,7 +504,7 @@ def main(argv = None):
         opt = tf.train.GradientDescentOptimizer(lr)
         grads = opt.compute_gradients(loss_value)
         org_grads = [(ClipIfNotNone(grad), var) for grad, var in grads]
-        new_grads = mask_gradients(weights, org_grads, weights_mask)
+        new_grads = mask_gradients(weights, org_grads, weights_mask, biases, biases_mask)
         #
         # Apply gradients.
         train_step = opt.apply_gradients(new_grads, global_step=global_step)
@@ -502,12 +530,14 @@ def main(argv = None):
             keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
             for key in keys:
                 sess.run(weights[key].assign(weights[key].eval()*weights_mask[key]))
+                sess.run(biases[key].assign(biases[key].eval()*biases_mask[key]))
+
             print('pre train pruning info')
             prune_info(weights, 0)
             print(78*'-')
             start = time.time()
             if TRAIN == 1:
-                for i in range(0,3000):
+                for i in range(0,60000):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
@@ -515,9 +545,10 @@ def main(argv = None):
                                     keep_prob: 1.0})
                     if (i % DISPLAY_FREQ == 0):
                         # prune_info(weights, 0)
-                        print('This is the {}th iteration of {} pruning, time is {}'.format(
+                        print('This is the {}th iteration of {},{}pruning, time is {}'.format(
                             i,
-                            pruning_number,
+                            pruning_cov,
+                            pruning_fc,
                             time.time() - start
                         ))
                         print("accuracy is {} and cross entropy is {}".format(
@@ -527,7 +558,7 @@ def main(argv = None):
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
                         accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
-                            save_pkl_model(weights, biases, model_name)
+                            save_pkl_model(weights, biases, model_name+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl')
                             print("saved the network")
                         # if (np.mean(train_acc) > 0.5):
                         if (np.mean(accuracy_list) > 0.79):
@@ -540,7 +571,6 @@ def main(argv = None):
                             accuracy_list = np.zeros(5)
                             print('test accuracy is {}'.format(test_acc))
                             print('Exiting the training, test accuracy is {}'.format(test_acc))
-                            prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
                             break
                     _ = sess.run(train_step, feed_dict = {
                                     x: batch_x,
@@ -555,9 +585,14 @@ def main(argv = None):
                 print("test accuracy is {}".format(test_acc))
                 # save_pkl_model(weights, biases, model_name)
             print('saving pruned model ...')
-            save_pkl_model(weights, biases, model_name+'v'+str(pruning_number)+'.pkl')
-            if (pruning_number == 0):
-                prune_weights((pruning_number+1)*10, weights, weights_mask, mask_dir+'v'+str(pruning_number)+'.pkl')
+            prune_weights(  pruning_cov,
+                            pruning_fc,
+                            weights,
+                            weights_mask,
+                            mask_dir+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl',
+                            biases,
+                            biases_mask)
+            save_pkl_model(weights, biases, model_name+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl')
             return test_acc
     except Usage, err:
         print >> sys.stderr, err.msg
