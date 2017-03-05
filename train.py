@@ -463,7 +463,7 @@ def main(argv = None):
             NUMBER_OF_BATCH = DATA_CNT / BATCH_SIZE
         else:
             if (PRUNE):
-                pass
+                images_test, cls_test, labels_test = cifar10.load_test_data()
             else:
                 images_test, cls_test, labels_test = cifar10.load_test_data()
 
