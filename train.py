@@ -133,6 +133,9 @@ def initialize_weights_mask(first_time_training, mask_dir, file_name):
             'fc2': np.ones([192]),
             'fc3': np.ones([NUM_CLASSES])
         }
+
+        with open('./mask/maskcov10cov20fc10fc20fc30.pkl', 'wb') as f:
+            pickle.dump((weights_mask,biases_mask), f)
     else:
         with open(mask_dir + file_name,'rb') as f:
             (weights_mask, biases_mask) = pickle.load(f)
@@ -375,9 +378,9 @@ def compute_file_name(thresholds):
     keys_fc = ['fc1', 'fc2', 'fc3']
     name = ''
     for key in keys_cov:
-        name += key + str(int(prune_thresholds[key]*10))
+        name += 'cov'+ str(int(prune_thresholds[key]*10))
     for key in keys_fc:
-        name += key + str(int(prune_thresholds[key]*10))
+        name += 'fc'+ str(int(prune_thresholds[key]*10))
     return name
 
 
