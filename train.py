@@ -585,7 +585,7 @@ def main(argv = None):
                                 weights,
                                 weights_mask,
                                 biases,
-                                biases_mask
+                                biases_mask,
                                 mask_dir,
                                 'mask' + f_name + '.pkl')
                 save_pkl_model(weights, biases, weights_dir, 'weights' + f_name + '.pkl')
