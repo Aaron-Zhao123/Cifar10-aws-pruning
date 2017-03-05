@@ -50,9 +50,15 @@ print("first train")
 acc_list.append(test_acc)
 
 run = 1
+
+level1 = 1
+level2 = 2
+level3 = 3
+working_level = level1
+hist = [(pcov, pfc, test_acc)]
+pcov = [10., 10.]
+pfc = [10., 10., 10.]
 while (run):
-    pcov = [0., 0.]
-    pfc = [0., 0., 0.]
     # Prune
     param = [
         ('-pcov1',pcov[0]),
@@ -66,6 +72,8 @@ while (run):
         ('-prune', True)
         ]
     _ = train.main(param)
+    # pruning saves the new models, masks
+    f_name = compute_file_name(pcov, pfc)
 
     # TRAIN
     param = [
@@ -94,12 +102,44 @@ while (run):
         ('-train', False),
         ('-prune', False)
         ]
-
-    pcov = pcov + 10.
-    pfc = pfc + 10.
     acc = train.main(param)
+    hist.append((pcov, pfc, acc))
+    if (working_level == level1):
+        if (acc >= 0.8):
+            f_name = compute_file_name(pcov, pfc)
+            pcov = pcov + [10., 10.]
+            pfc =  pfc +[10., 10., 10.]
+        else:
+            pcov = pcov - [10., 10.]
+            pfc =  pfc -[10., 10., 10.]
+            f_name = compute_file_name(pcov, pfc)
+            pcov = pcov + [1., 1.]
+            pfc =  pfc +[1., 1., 1.]
+            working_level = level2
+    if (working_level == level2):
+        if (acc >= 0.8):
+            f_name = compute_file_name(pcov, pfc)
+            pcov = pcov + [1., 1.]
+            pfc =  pfc +[1., 1., 1.]
+        else:
+            pcov = pcov - [1., 1.]
+            pfc =  pfc -[1., 1., 1.]
+            f_name = compute_file_name(pcov, pfc)
+            pcov = pcov + [0.1, 0.1]
+            pfc =  pfc +[0.1, 0.1, 0.1]
+            working_level = level3
+    if (working_level == level3):
+        if (acc >= 0.8):
+            f_name = compute_file_name(pcov, pfc)
+            pcov = pcov + [0.1, 0.1]
+            pfc =  pfc +[0.1, 0.1, 0.1]
+        else:
+            run = 0
+            print('finished')
+
+
+
     acc_list.append(acc)
-    retrain = 0
     count = count + 1
     print (acc)
 
@@ -108,3 +148,11 @@ print('accuracy summary: {}'.format(acc_list))
 with open("acc_cifar.txt", "w") as f:
     for item in acc_list:
         f.write("%s\n"%item)
+
+def compute_file_name(pcov, pfc):
+    name += 'cov' + str(int(pcov[0] * 10))
+    name += 'cov' + str(int(pcov[1] * 10))
+    name += 'fc' + str(int(pfc[0] * 10))
+    name += 'fc' + str(int(pfc[1] * 10))
+    name += 'fc' + str(int(pfc[2] * 10))
+    return name
