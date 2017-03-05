@@ -62,6 +62,10 @@ run = 1
 level1 = 1
 level2 = 2
 level3 = 3
+level4 = 4
+level5 = 5
+level6 = 6
+
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [10., 10.]
@@ -115,37 +119,34 @@ while (run):
     if (working_level == level1):
         if (acc >= 0.8):
             f_name = compute_file_name(pcov, pfc)
-            pcov = pcov + [10., 10.]
-            pfc =  pfc +[10., 10., 10.]
+            pfc[0] = pfc[0] + 10.
         else:
-            pcov = pcov - [10., 10.]
-            pfc =  pfc -[10., 10., 10.]
+            pfc[0] = pfc[0] - 10.
             f_name = compute_file_name(pcov, pfc)
-            pcov = pcov + [1., 1.]
-            pfc =  pfc +[1., 1., 1.]
             working_level = level2
-    if (working_level == level2):
-        if (acc >= 0.8):
-            f_name = compute_file_name(pcov, pfc)
-            pcov = pcov + [1., 1.]
-            pfc =  pfc +[1., 1., 1.]
-        else:
-            pcov = pcov - [1., 1.]
-            pfc =  pfc -[1., 1., 1.]
-            f_name = compute_file_name(pcov, pfc)
-            pcov = pcov + [0.1, 0.1]
-            pfc =  pfc +[0.1, 0.1, 0.1]
-            working_level = level3
-    if (working_level == level3):
-        if (acc >= 0.8):
-            f_name = compute_file_name(pcov, pfc)
-            pcov = pcov + [0.1, 0.1]
-            pfc =  pfc +[0.1, 0.1, 0.1]
-        else:
             run = 0
-            print('finished')
-
-
+    # if (working_level == level2):
+    #     if (acc >= 0.8):
+    #         f_name = compute_file_name(pcov, pfc)
+    #         pcov = []pcov + [1., 1.]
+    #         pfc =  pfc +[1., 1., 1.]
+    #     else:
+    #         pcov = pcov - [1., 1.]
+    #         pfc =  pfc -[1., 1., 1.]
+    #         f_name = compute_file_name(pcov, pfc)
+    #         pcov = pcov + [0.1, 0.1]
+    #         pfc =  pfc +[0.1, 0.1, 0.1]
+    #         working_level = level3
+    # if (working_level == level3):
+    #     if (acc >= 0.8):
+    #         f_name = compute_file_name(pcov, pfc)
+    #         pcov = pcov + [0.1, 0.1]
+    #         pfc =  pfc +[0.1, 0.1, 0.1]
+    #     else:
+    #         run = 0
+    #         print('finished')
+    #
+    #
 
     acc_list.append(acc)
     count = count + 1
