@@ -24,10 +24,10 @@ f_name = name
 # initial run
 param = [
     ('-pcov1',pcov[0]),
-    ('-pcov2',pcov[1]),
+    ('-pcov2',pcov[0]),
     ('-pfc1',pfc[0]),
-    ('-pfc2',pfc[1]),
-    ('-pfc3',pfc[2]),
+    ('-pfc2',pfc[0]),
+    ('-pfc3',pfc[0]),
     ('-first_time', True),
     ('-file_name', f_name),
     ('-train', True),
@@ -36,10 +36,10 @@ param = [
 acc = train.main(param)
 param = [
     ('-pcov1',pcov[0]),
-    ('-pcov2',pcov[1]),
+    ('-pcov2',pcov[0]),
     ('-pfc1',pfc[0]),
-    ('-pfc2',pfc[1]),
-    ('-pfc3',pfc[2]),
+    ('-pfc2',pfc[0]),
+    ('-pfc3',pfc[0]),
     ('-first_time', False),
     ('-file_name', f_name),
     ('-train', False),
@@ -52,6 +52,8 @@ acc_list.append(test_acc)
 while (run):
     pcov = [0., 0.]
     pfc = [0., 0., 0.]
+    pcov = [10., 10.]
+    pfc = [10., 10., 10.]
     # Prune
     param = [
         ('-pcov1',pcov1),

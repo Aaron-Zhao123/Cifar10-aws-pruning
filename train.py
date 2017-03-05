@@ -279,7 +279,7 @@ class training_data():
                     self.labels[start_pt:self.data_size])
 
 
-def save_pkl_model(weights, biases, save_dir):
+def save_pkl_model(weights, biases, save_dir ,f_name):
     # name = os.path.join(data_path, "cifar-10-batches-py/", filename)
     # if not os.path.exists(path):
     #     os.makedirs(path)
@@ -532,7 +532,7 @@ def main(argv = None):
             start = time.time()
             if TRAIN == 1:
                 # for i in range(0,60000):
-                for i in range(0,60):
+                for i in range(0,6):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
@@ -551,7 +551,7 @@ def main(argv = None):
                         accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
-                            save_pkl_model(weights, biases, weights_dir, f_name)
+                            save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
                             print("saved the network")
                         # if (np.mean(train_acc) > 0.5):
                         if (np.mean(accuracy_list) > 0.8):
@@ -578,7 +578,6 @@ def main(argv = None):
             print("test accuracy is {}".format(test_acc))
             if (TRAIN):
                 save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
-
             if (PRUNE):
                 print('saving pruned model ...')
                 f_name = compute_file_name(prune_thresholds)
