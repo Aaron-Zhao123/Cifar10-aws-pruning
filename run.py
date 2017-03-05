@@ -49,6 +49,7 @@ test_acc = train.main(param)
 print("first train")
 acc_list.append(test_acc)
 
+run = 1
 while (run):
     pcov = [0., 0.]
     pfc = [10., 0., 0.]
