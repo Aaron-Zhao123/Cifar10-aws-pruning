@@ -97,8 +97,6 @@ while (run):
 
     run = 0
     acc = train.main(param)
-    pcov = pcov+10
-    pfc = pfc+10
     acc_list.append(acc)
     retrain = 0
     count = count + 1
