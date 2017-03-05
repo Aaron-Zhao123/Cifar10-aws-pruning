@@ -7,7 +7,14 @@ import train
 # os.system('python training_v3.py -p4')
 # os.system('python training_v3.py -p4')
 # os.system('python training_v3.py -p5')
-
+def compute_file_name(pcov, pfc):
+    name += 'cov' + str(int(pcov[0] * 10))
+    name += 'cov' + str(int(pcov[1] * 10))
+    name += 'fc' + str(int(pfc[0] * 10))
+    name += 'fc' + str(int(pfc[1] * 10))
+    name += 'fc' + str(int(pfc[2] * 10))
+    return name
+    
 acc_list = []
 count = 0
 pcov = [0., 0.]
@@ -148,11 +155,3 @@ print('accuracy summary: {}'.format(acc_list))
 with open("acc_cifar.txt", "w") as f:
     for item in acc_list:
         f.write("%s\n"%item)
-
-def compute_file_name(pcov, pfc):
-    name += 'cov' + str(int(pcov[0] * 10))
-    name += 'cov' + str(int(pcov[1] * 10))
-    name += 'fc' + str(int(pfc[0] * 10))
-    name += 'fc' + str(int(pfc[1] * 10))
-    name += 'fc' + str(int(pfc[2] * 10))
-    return name
