@@ -378,9 +378,9 @@ def compute_file_name(thresholds):
     keys_fc = ['fc1', 'fc2', 'fc3']
     name = ''
     for key in keys_cov:
-        name += 'cov'+ str(int(prune_thresholds[key]*10))
+        name += 'cov'+ str(int(thresholds[key]*10))
     for key in keys_fc:
-        name += 'fc'+ str(int(prune_thresholds[key]*10))
+        name += 'fc'+ str(int(thresholds[key]*10))
     return name
 
 
