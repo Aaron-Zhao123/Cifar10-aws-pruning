@@ -13,6 +13,14 @@ count = 0
 pcov = [0., 0.]
 pfc = [0., 0., 0.]
 retrain = 0
+keys_cov = ['cov1', 'cov2']
+keys_fc = ['fc1', 'fc2', 'fc3']
+name = ''
+for key in keys_cov:
+    name += key + str(int(0*10))
+for key in keys_fc:
+    name += key + str(int(0*10))
+f_name = name
 # initial run
 param = [
     ('-pcov1',pcov[0]),
