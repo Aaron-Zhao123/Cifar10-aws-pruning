@@ -93,23 +93,23 @@ def initialize_variables(exist, file_name):
         }
     return (weights, biases)
 
-def prune_weights(percent_cov, percent_fc, weights, weights_mask, biases, biases_mask, mask_dir, f_name):
+def prune_weights(prune_thresholds, weights, weights_mask, biases, biases_mask, mask_dir, f_name):
     keys_cov = ['cov1', 'cov2']
     keys_fc = ['fc1', 'fc2', 'fc3']
     next_threshold = {}
     for key in keys_cov:
         weight = weights[key].eval()
         biase = biases[key].eval()
-        threshold = np.percentile(np.abs(weight), percent_cov)
+        threshold = np.percentile(np.abs(weight), prune_thresholds[key])
         weights_mask[key] = np.abs(weight) > threshold
-        threshold = np.percentile(np.abs(biase),percent_cov)
+        threshold = np.percentile(np.abs(biase), prune_thresholds[key])
         biases_mask[key] = np.abs(biase) > threshold
     for key in keys_fc:
         weight = weights[key].eval()
         biase = biases[key].eval()
-        threshold = np.percentile(np.abs(weight), percent_fc)
+        threshold = np.percentile(np.abs(weight), prune_thresholds[key])
         weights_mask[key] = np.abs(weight) > threshold
-        threshold = np.percentile(np.abs(biase),percent_fc)
+        threshold = np.percentile(np.abs(biase), prune_thresholds[key])
         biases_mask[key] = np.abs(biase) > threshold
     with open(mask_dir + f_name, 'wb') as f:
         pickle.dump((weights_mask,biases_mask), f)
@@ -538,10 +538,9 @@ def main(argv = None):
                                     y: batch_y,
                                     keep_prob: 1.0})
                     if (i % DISPLAY_FREQ == 0):
-                        print('This is the {}th iteration of {},{}pruning, time is {}'.format(
+                        print('This is the {}th iteration of {}pruning, time is {}'.format(
                             i,
-                            pruning_cov,
-                            pruning_fc,
+                            prune_thresholds,
                             time.time() - start
                         ))
                         print("accuracy is {} and cross entropy is {}".format(
