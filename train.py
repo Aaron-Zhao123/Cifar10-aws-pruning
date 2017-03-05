@@ -73,26 +73,6 @@ def initialize_variables(exist, file_name):
         }
     else:
         weights = {
-            # 'cov1': _variable_with_weight_decay('weights_cov1' ,
-            #                                     shape = [5, 5, NUM_CHANNELS, 64],
-            #                                     stddev = 5e-2,
-            #                                     wd=0.004),
-            # 'cov2': _variable_with_weight_decay('weights_cov2' ,
-            #                                     shape = [5, 5, 64, 64],
-            #                                     stddev = 5e-2,
-            #                                     wd=0.004),
-            # 'fc1': _variable_with_weight_decay('weights_fc1' ,
-            #                                     shape = [IMAGE_SIZE // 4 * IMAGE_SIZE // 4 * 64, 384],
-            #                                     stddev = 5e-2,
-            #                                     wd=0.004),
-            # 'fc2': _variable_with_weight_decay('weights_fc2' ,
-            #                                     shape = [384, 192],
-            #                                     stddev = 5e-2,
-            #                                     wd=0.004),
-            # 'fc3': _variable_with_weight_decay('weights_fc3' ,
-            #                                     shape = [192, NUM_CLASSES],
-            #                                     stddev = 1/192.0,
-            #                                     wd=0.0)
             'cov1': tf.Variable(tf.truncated_normal([5, 5, NUM_CHANNELS, 64],
                                                         stddev=5e-2)),
             'cov2': tf.Variable(tf.truncated_normal([5, 5, 64, 64],
@@ -113,7 +93,7 @@ def initialize_variables(exist, file_name):
         }
     return (weights, biases)
 
-def prune_weights(percent_cov, percent_fc, weights, weights_mask, mask_dir, biases, biases_mask):
+def prune_weights(percent_cov, percent_fc, weights, weights_mask, biases, biases_mask, mask_dir, f_name):
     keys_cov = ['cov1', 'cov2']
     keys_fc = ['fc1', 'fc2', 'fc3']
     next_threshold = {}
@@ -131,10 +111,10 @@ def prune_weights(percent_cov, percent_fc, weights, weights_mask, mask_dir, bias
         weights_mask[key] = np.abs(weight) > threshold
         threshold = np.percentile(np.abs(biase),percent_fc)
         biases_mask[key] = np.abs(biase) > threshold
-    with open(mask_dir, 'wb') as f:
+    with open(mask_dir + f_name, 'wb') as f:
         pickle.dump((weights_mask,biases_mask), f)
 
-def initialize_weights_mask(first_time_training, mask_dir):
+def initialize_weights_mask(first_time_training, mask_dir, file_name):
     NUM_CHANNELS = 3
     NUM_CLASSES = 10
     if (first_time_training == 1):
@@ -154,7 +134,7 @@ def initialize_weights_mask(first_time_training, mask_dir):
             'fc3': np.ones([NUM_CLASSES])
         }
     else:
-        with open(mask_dir,'rb') as f:
+        with open(mask_dir + file_name,'rb') as f:
             (weights_mask, biases_mask) = pickle.load(f)
     return (weights_mask, biases_mask)
 
@@ -309,7 +289,7 @@ def save_pkl_model(weights, biases, save_dir):
     for key in keys:
         weights_val[key] = weights[key].eval()
         biases_val[key] = biases[key].eval()
-    with open(save_dir, 'wb') as f:
+    with open(save_dir + f_name, 'wb') as f:
         print('Created a pickle file')
         pickle.dump((weights_val, biases_val), f)
 
@@ -390,21 +370,54 @@ def ClipIfNotNone(grad):
         return grad
     return tf.clip_by_value(grad, -1, 1)
 
+def compute_file_name(thresholds):
+    keys_cov = ['cov1', 'cov2']
+    keys_fc = ['fc1', 'fc2', 'fc3']
+    name = ''
+    for key in keys_cov:
+        name += key + str(int(prune_thresholds[key]*10))
+    for key in keys_fc:
+        name += key + str(int(prune_thresholds[key]*10))
+    return name
+
+
 def main(argv = None):
     if (argv is None):
         argv = sys.argv
     try:
         try:
             opts = argv
+            first_time_load = True
+            keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
+            prune_thresholds = {}
+            for key in keys:
+                prune_thresholds[key] = 0.
+
             for item in opts:
                 print (item)
                 opt = item[0]
                 val = item[1]
-                if (opt == '-pcov'):
-                    pruning_cov = val
-                if (opt == '-pfc'):
-                    pruning_fc = val
-            print('pruning count is {}, {}'.format(pruning_cov, pruning_fc))
+                if (opt == '-pcov1'):
+                    prune_thresholds['cov1'] = val
+                if (opt == '-pcov2'):
+                    prune_thresholds['cov2'] = val
+                if (opt == '-pfc1'):
+                    prune_thresholds['fc1'] = val
+                if (opt == '-pfc2'):
+                    prune_thresholds['fc2'] = val
+                if (opt == '-pfc3'):
+                    prune_thresholds['fc3'] = val
+                if (opt == '-first_time'):
+                    first_time_load = val
+                if (opt == '-file_name'):
+                    file_name = val
+                if (opt == '-train'):
+                    TRAIN = val
+                if (opt == '-prune'):
+                    PRUNE = val
+
+
+            print('pruning thresholds are {}'.format(prune_thresholds))
         except getopt.error, msg:
             raise Usage(msg)
         NUM_CLASSES = 10
@@ -416,15 +429,10 @@ def main(argv = None):
         NUM_EPOCHS_PER_DECAY = 350.0
         MOVING_AVERAGE_DECAY = 0.9999     # The decay to use for the moving average.
         DISPLAY_FREQ = 20
-        TRAIN = 0
         TEST = 1
         TRAIN_OR_TEST = 0
         NUM_CHANNELS = 3
         DOCKER = 0
-    # model_name = 'tmp_20160130.pkl'
-    # model_name = 'data_sync/test20170203.pkl'
-    #model_name = '20170205.pkl'
-    # model_name = '20170206.pkl'
         if (DOCKER == 1):
             # base_model_name = '/root/data/20170206.pkl'
             # model_name = '/root/data/pruning.pkl'
@@ -433,53 +441,48 @@ def main(argv = None):
             model_name = '/root/pruning'
             mask_dir = '/root/mask'
         else:
-            mask_dir = './data/mask'
-            base_model_name = './data/20170206.pkl'
-            model_name = './data/pruning'
+            mask_dir = './mask/'
+            weights_dir = './weights/'
         # model_name = 'test.pkl'
         # model_name = '../tf_official_docker/tmp.pkl'
         PREV_MODEL_EXIST = 1
 
 
-        # cls_train returns as an integer, labels is the array
-        if (pruning_fc == 0 and pruning_cov == 0):
-            print("It's first time loading!")
-            first_time_load = 1
-        else:
-            first_time_load = 0
-        print('pruning on cov is {}. on fc is {}'.format(pruning_cov, pruning_fc))
-        (weights_mask,biases_mask)= initialize_weights_mask(first_time_load, mask_dir+'v'+str(pruning_cov-10) + str(pruning_fc-10)+'.pkl')
+
+        (weights_mask,biases_mask)= initialize_weights_mask(first_time_load, mask_dir, 'mask'+file_name + '.pkl')
         cifar10.maybe_download_and_extract()
         class_names = cifar10.load_class_names()
-        images_train, cls_train, labels_train = cifar10.load_training_data()
-        images_test, cls_test, labels_test = cifar10.load_test_data()
-        t_data = training_data(images_train, labels_train)
 
-        DATA_CNT = len(images_train)
-        NUMBER_OF_BATCH = DATA_CNT / BATCH_SIZE
+        if (TRAIN):
+            images_train, cls_train, labels_train = cifar10.load_training_data()
+            images_test, cls_test, labels_test = cifar10.load_test_data()
+            t_data = training_data(images_train, labels_train)
+            DATA_CNT = len(images_train)
+            NUMBER_OF_BATCH = DATA_CNT / BATCH_SIZE
+        else:
+            if (PRUNE):
+                pass
+            else:
+                images_test, cls_test, labels_test = cifar10.load_test_data()
+
+
 
         training_data_list = []
 
-        if (first_time_load == 1):
-            weights, biases = initialize_variables(PREV_MODEL_EXIST, base_model_name)
+        if (first_time_load):
+            weights, biases = initialize_variables(PREV_MODEL_EXIST, '')
         else:
-            weights, biases = initialize_variables(PREV_MODEL_EXIST, model_name+'v'+str(pruning_cov-10) + str(pruning_fc-10)+'.pkl')
+            weights, biases = initialize_variables( PREV_MODEL_EXIST,
+                                                    weights_dir + 'weights' + file_name + '.pkl')
 
         x = tf.placeholder(tf.float32, [None, 32, 32, 3])
         y = tf.placeholder(tf.float32, [None, NUM_CLASSES])
 
-        if (first_time_load == 1):
-            TRAIN = 0
-        if (TRAIN == 1):
-            TRAIN_OR_TEST = 1
-        else:
-            TRAIN_OR_TEST = 0
 
         keep_prob = tf.placeholder(tf.float32)
-        images = pre_process(x, TRAIN_OR_TEST)
-        # images = pre_process(x, 1)
+        images = pre_process(x, TRAIN)
+
         pred = cov_network(images, weights, biases, keep_prob)
-        # print(pred)
         cross_entropy = tf.nn.softmax_cross_entropy_with_logits(pred, y)
         loss_value = tf.reduce_mean(cross_entropy)
 
@@ -505,27 +508,17 @@ def main(argv = None):
         grads = opt.compute_gradients(loss_value)
         org_grads = [(ClipIfNotNone(grad), var) for grad, var in grads]
         new_grads = mask_gradients(weights, org_grads, weights_mask, biases, biases_mask)
-        #
+
         # Apply gradients.
         train_step = opt.apply_gradients(new_grads, global_step=global_step)
-        # train_step = tf.train.GradientDescentOptimizer(INITIAL_LEARNING_RATE).minimize(loss_value)
-        # variable_averages = tf.train.ExponentialMovingAverage(
-        #   MOVING_AVERAGE_DECAY, global_step)
-        # variables_averages_op = variable_averages.apply(tf.trainable_variables())
 
 
         init = tf.global_variables_initializer()
         accuracy_list = np.zeros(30)
-        accuracy_list = np.zeros(5)
         # Launch the graph
         print('Graph launching ..')
         with tf.Session() as sess:
             sess.run(init)
-            # restore model if exists
-            # if (os.path.isfile("tmp_20160130/model.meta")):
-            #     op = tf.train.import_meta_graph("tmp_20160130/model.meta")
-            #     op.restore(sess,tf.train.latest_checkpoint('tmp_20160130/'))
-            #     print ("model found and restored")
 
             keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
             for key in keys:
@@ -544,7 +537,6 @@ def main(argv = None):
                                     y: batch_y,
                                     keep_prob: 1.0})
                     if (i % DISPLAY_FREQ == 0):
-                        # prune_info(weights, 0)
                         print('This is the {}th iteration of {},{}pruning, time is {}'.format(
                             i,
                             pruning_cov,
@@ -555,10 +547,10 @@ def main(argv = None):
                             train_acc,
                             cross_en
                         ))
-                        # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
-                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
+                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
+                        # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
-                            save_pkl_model(weights, biases, model_name+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl')
+                            save_pkl_model(weights, biases, weights_dir, f_name)
                             print("saved the network")
                         # if (np.mean(train_acc) > 0.5):
                         if (np.mean(accuracy_list) > 0.8):
@@ -567,33 +559,36 @@ def main(argv = None):
                                                     x: images_test,
                                                     y: labels_test,
                                                     keep_prob: 1.0})
-                            # accuracy_list = np.zeros(30)
-                            accuracy_list = np.zeros(5)
+                            accuracy_list = np.zeros(30)
+                            # accuracy_list = np.zeros(5)
                             print('test accuracy is {}'.format(test_acc))
-                            if (test_acc > 0.8):
+                            if (test_acc > 0.8 and first_time_load):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
                                 break
                     _ = sess.run(train_step, feed_dict = {
                                     x: batch_x,
                                     y: batch_y,
                                     keep_prob: dropout})
-            print('hi?')
-            if (TEST == 1):
-                test_acc = sess.run(accuracy, feed_dict = {
-                                        x: images_test,
-                                        y: labels_test,
-                                        keep_prob: 1.0})
-                print("test accuracy is {}".format(test_acc))
-                # save_pkl_model(weights, biases, model_name)
-            print('saving pruned model ...')
-            prune_weights(  pruning_cov,
-                            pruning_fc,
-                            weights,
-                            weights_mask,
-                            mask_dir+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl',
-                            biases,
-                            biases_mask)
-            save_pkl_model(weights, biases, model_name+'v'+str(pruning_cov)+ str(pruning_fc)+'.pkl')
+
+            test_acc = sess.run(accuracy, feed_dict = {
+                                    x: images_test,
+                                    y: labels_test,
+                                    keep_prob: 1.0})
+            print("test accuracy is {}".format(test_acc))
+            if (TRAIN):
+                save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
+
+            if (PRUNE):
+                print('saving pruned model ...')
+                f_name = compute_file_name(prune_thresholds)
+                prune_weights(  prune_thresholds,
+                                weights,
+                                weights_mask,
+                                biases,
+                                biases_mask
+                                mask_dir,
+                                'mask' + f_name + '.pkl')
+                save_pkl_model(weights, biases, weights_dir, 'weights' + f_name + '.pkl')
             return test_acc
     except Usage, err:
         print >> sys.stderr, err.msg

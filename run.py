@@ -10,14 +10,83 @@ import train
 
 acc_list = []
 count = 0
-pcov = 0
-pfc = 0
+pcov = [0., 0.]
+pfc = [0., 0., 0.]
 retrain = 0
-while (count < 9):
+# initial run
+param = [
+    ('-pcov1',pcov[0]),
+    ('-pcov2',pcov[1]),
+    ('-pfc1',pfc[0]),
+    ('-pfc2',pfc[1]),
+    ('-pfc3',pfc[2]),
+    ('-first_time', True),
+    ('-file_name', f_name),
+    ('-train', True),
+    ('-prune', False)
+    ]
+acc = train.main(param)
+param = [
+    ('-pcov1',pcov[0]),
+    ('-pcov2',pcov[1]),
+    ('-pfc1',pfc[0]),
+    ('-pfc2',pfc[1]),
+    ('-pfc3',pfc[2]),
+    ('-first_time', False),
+    ('-file_name', f_name),
+    ('-train', False),
+    ('-prune', False)
+    ]
+test_acc = train.main(param)
+print("first train")
+acc_list.append(test_acc)
+
+while (run):
+    pcov = [0., 0.]
+    pfc = [0., 0., 0.]
+    # Prune
     param = [
-        ('-pcov',pcov),
-        ('-pfc',pfc)
+        ('-pcov1',pcov1),
+        ('-pcov2',pcov2),
+        ('-pfc1',pfc1),
+        ('-pfc2',pfc2),
+        ('-pfc3',pfc3),
+        ('-first_time', False),
+        ('-file_name', f_name),
+        ('-train', False),
+        ('-prune', True)
         ]
+    _ = train.main(param)
+
+    # TRAIN
+    param = [
+        ('-pcov1',pcov1),
+        ('-pcov2',pcov2),
+        ('-pfc1',pfc1),
+        ('-pfc2',pfc2),
+        ('-pfc3',pfc3),
+        ('-first_time', False),
+        ('-file_name', f_name),
+        ('-train', True),
+        ('-prune', False)
+        ]
+    _ = train.main(param)
+
+    # TEST
+
+    param = [
+        ('-pcov1',pcov1),
+        ('-pcov2',pcov2),
+        ('-pfc1',pfc1),
+        ('-pfc2',pfc2),
+        ('-pfc3',pfc3),
+        ('-first_time', False),
+        ('-file_name', f_name),
+        ('-train', False),
+        ('-prune', False)
+        ]
+
+    run = 0
     acc = train.main(param)
     pcov = pcov+10
     pfc = pfc+10
@@ -25,6 +94,7 @@ while (count < 9):
     retrain = 0
     count = count + 1
     print (acc)
+
 print('accuracy summary: {}'.format(acc_list))
 # acc_list = [0.82349998, 0.8233, 0.82319999, 0.81870002, 0.82050002, 0.80400002, 0.74940002, 0.66060001, 0.5011]
 with open("acc_cifar.txt", "w") as f:
