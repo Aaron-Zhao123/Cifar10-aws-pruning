@@ -17,9 +17,9 @@ keys_cov = ['cov1', 'cov2']
 keys_fc = ['fc1', 'fc2', 'fc3']
 name = ''
 for key in keys_cov:
-    name += 'cov' + str(int(0*10))
+    name += 'cov' + str(int(0))
 for key in keys_fc:
-    name += 'fc' + str(int(0*10))
+    name += 'fc' + str(int(0))
 f_name = name
 # initial run
 param = [
@@ -52,7 +52,7 @@ acc_list.append(test_acc)
 run = 1
 while (run):
     pcov = [0., 0.]
-    pfc = [10., 0., 0.]
+    pfc = [0., 0., 0.]
     # Prune
     param = [
         ('-pcov1',pcov[0]),
@@ -95,7 +95,8 @@ while (run):
         ('-prune', False)
         ]
 
-    run = 0
+    pcov = pcov + 10.
+    pfc = pfc + 10.
     acc = train.main(param)
     acc_list.append(acc)
     retrain = 0
