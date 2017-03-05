@@ -445,7 +445,6 @@ def main(argv = None):
             weights_dir = './weights/'
         # model_name = 'test.pkl'
         # model_name = '../tf_official_docker/tmp.pkl'
-        PREV_MODEL_EXIST = 1
 
 
 
@@ -470,8 +469,10 @@ def main(argv = None):
         training_data_list = []
 
         if (first_time_load):
+            PREV_MODEL_EXIST = 0
             weights, biases = initialize_variables(PREV_MODEL_EXIST, '')
         else:
+            PREV_MODEL_EXIST = 1
             weights, biases = initialize_variables( PREV_MODEL_EXIST,
                                                     weights_dir + 'weights' + file_name + '.pkl')
 
