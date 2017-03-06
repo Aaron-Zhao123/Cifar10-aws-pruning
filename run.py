@@ -43,7 +43,7 @@ param = [
     ('-train', True),
     ('-prune', False)
     ]
-acc = train.main(param)
+# acc = train.main(param)
 param = [
     ('-pcov1',pcov[0]),
     ('-pcov2',pcov[1]),
