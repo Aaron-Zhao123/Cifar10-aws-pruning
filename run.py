@@ -30,7 +30,7 @@ for key in keys_cov:
 for key in keys_fc:
     name += 'fc' + str(int(0))
 f_name = name
-f_name = 'pruningv00'
+# f_name = 'pruningv00'
 # initial run
 param = [
     ('-pcov1',pcov[0]),
@@ -121,15 +121,19 @@ while (run):
         ]
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
-    if (working_level == level1):
-        if (acc >= 0.8):
-            f_name = compute_file_name(pcov, pfc)
-            pfc[0] = pfc[0] + 10.
-        else:
-            pfc[0] = pfc[0] - 10.
-            f_name = compute_file_name(pcov, pfc)
-            working_level = level2
-            run = 0
+    f_name = compute_file_name(pcov, pfc)
+    pfc[0] = pfc[0] + 10.
+    if (pfc[0] > 90):
+        run = 0
+    # if (working_level == level1):
+    #     if (acc >= 0.8):
+    #         f_name = compute_file_name(pcov, pfc)
+    #         pfc[0] = pfc[0] + 10.
+    #     else:
+    #         pfc[0] = pfc[0] - 10.
+    #         f_name = compute_file_name(pcov, pfc)
+    #         working_level = level2
+    #         run = 0
     # if (working_level == level2):
     #     if (acc >= 0.8):
     #         f_name = compute_file_name(pcov, pfc)

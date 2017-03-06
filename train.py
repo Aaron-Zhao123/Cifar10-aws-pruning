@@ -518,7 +518,7 @@ def main(argv = None):
 
 
         init = tf.global_variables_initializer()
-        accuracy_list = np.zeros(5)
+        accuracy_list = np.zeros(10)
         train_acc_list = []
         # Launch the graph
         print('Graph launching ..')
@@ -552,25 +552,26 @@ def main(argv = None):
                             train_acc,
                             cross_en
                         ))
-                        train_acc_list.append(train_acc)
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
-                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
+                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:9]))
+                        # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
+                            train_acc_list.append(train_acc)
                             save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
                             print("saved the network")
                         # if (np.mean(train_acc) > 0.5):
-                        if (np.mean(accuracy_list) > 0.78):
+                        if (np.mean(accuracy_list) > 0.8):
                             print("training accuracy is large, show the list: {}".format(accuracy_list))
-                            test_acc = sess.run(accuracy, feed_dict = {
-                                                    x: images_test,
-                                                    y: labels_test,
-                                                    keep_prob: 1.0})
+                            # test_acc = sess.run(accuracy, feed_dict = {
+                            #                         x: images_test,
+                            #                         y: labels_test,
+                            #                         keep_prob: 1.0})
                             # accuracy_list = np.zeros(30)
-                            accuracy_list = np.zeros(5)
-                            print('test accuracy is {}'.format(test_acc))
-                            if (test_acc > 0.78 and first_time_load):
-                                print('Exiting the training, test accuracy is {}'.format(test_acc))
-                                break
+                            accuracy_list = np.zeros(10)
+                            # print('test accuracy is {}'.format(test_acc))
+                            # if (test_acc > 0.78 and first_time_load):
+                            # print('Exiting the training, test accuracy is {}'.format(test_acc))
+                            break
                     _ = sess.run(train_step, feed_dict = {
                                     x: batch_x,
                                     y: batch_y,
@@ -583,8 +584,8 @@ def main(argv = None):
             print("test accuracy is {}".format(test_acc))
             if (TRAIN):
                 save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
-                with open('training_data.pkl', 'wb') as f:
-                    pickle.dump(training_data_list, f)
+                with open('t_data/'+'training_data'+file_name+'.pkl', 'wb') as f:
+                    pickle.dump(train_acc_list, f)
 
             if (PRUNE):
                 print('saving pruned model ...')
