@@ -568,7 +568,7 @@ def main(argv = None):
                             accuracy_list = np.zeros(30)
                             # accuracy_list = np.zeros(5)
                             print('test accuracy is {}'.format(test_acc))
-                            if (test_acc > 0.8 and first_time_load):
+                            if (test_acc > 0.78 and first_time_load):
                                 print('Exiting the training, test accuracy is {}'.format(test_acc))
                                 break
                     _ = sess.run(train_step, feed_dict = {
