@@ -59,7 +59,6 @@ test_acc = train.main(param)
 print("first train")
 acc_list.append(test_acc)
 print('accuracy summary: {}'.format(acc_list))
-sys.exit()
 
 run = 1
 
