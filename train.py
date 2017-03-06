@@ -431,7 +431,7 @@ def main(argv = None):
         LEARNING_RATE_DECAY_FACTOR = 0.1
         NUM_EPOCHS_PER_DECAY = 350.0
         MOVING_AVERAGE_DECAY = 0.9999     # The decay to use for the moving average.
-        DISPLAY_FREQ = 20
+        DISPLAY_FREQ = 50
         TEST = 1
         TRAIN_OR_TEST = 0
         NUM_CHANNELS = 3
@@ -519,6 +519,7 @@ def main(argv = None):
 
         init = tf.global_variables_initializer()
         accuracy_list = np.zeros(30)
+        train_acc_list = []
         # Launch the graph
         print('Graph launching ..')
         with tf.Session() as sess:
@@ -534,8 +535,8 @@ def main(argv = None):
             print(78*'-')
             start = time.time()
             if TRAIN == 1:
-                for i in range(0,60000):
-                # for i in range(0,6):
+                # for i in range(0,60000):
+                for i in range(0,6):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
@@ -551,6 +552,7 @@ def main(argv = None):
                             train_acc,
                             cross_en
                         ))
+                        train_acc_list.append(train_acc)
                         accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
@@ -581,6 +583,9 @@ def main(argv = None):
             print("test accuracy is {}".format(test_acc))
             if (TRAIN):
                 save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
+                with open('training_data.pkl', 'wb') as f:
+                    pickle.dump(training_data_list, f)
+
             if (PRUNE):
                 print('saving pruned model ...')
                 f_name = compute_file_name(prune_thresholds)

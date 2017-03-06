@@ -1,5 +1,6 @@
 import os
 import train
+import sys
 # os.system('python training_v3.py -p0')
 # os.system('python training_v3.py -p1')
 # os.system('python training_v3.py -p2')
@@ -56,6 +57,8 @@ param = [
 test_acc = train.main(param)
 print("first train")
 acc_list.append(test_acc)
+print('accuracy summary: {}'.format(acc_list))
+sys.exit()
 
 run = 1
 
@@ -84,7 +87,7 @@ while (run):
         ('-prune', True)
         ]
     _ = train.main(param)
-    
+
     # pruning saves the new models, masks
     f_name = compute_file_name(pcov, pfc)
 
