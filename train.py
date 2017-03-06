@@ -535,8 +535,8 @@ def main(argv = None):
             print(78*'-')
             start = time.time()
             if TRAIN == 1:
-                # for i in range(0,60000):
-                for i in range(0,6):
+                for i in range(0,60000):
+                # for i in range(0,6):
                     (batch_x, batch_y) = t_data.feed_next_batch(BATCH_SIZE)
                     train_acc, cross_en = sess.run([accuracy, loss_value], feed_dict = {
                                     x: batch_x,
