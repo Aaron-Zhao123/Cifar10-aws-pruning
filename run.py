@@ -30,6 +30,7 @@ for key in keys_cov:
 for key in keys_fc:
     name += 'fc' + str(int(0))
 f_name = name
+f_name = 'pruningv00'
 # initial run
 param = [
     ('-pcov1',pcov[0]),
@@ -42,7 +43,7 @@ param = [
     ('-train', True),
     ('-prune', False)
     ]
-acc = train.main(param)
+# acc = train.main(param)
 param = [
     ('-pcov1',pcov[0]),
     ('-pcov2',pcov[1]),

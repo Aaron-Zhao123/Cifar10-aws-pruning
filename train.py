@@ -559,7 +559,7 @@ def main(argv = None):
                             save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
                             print("saved the network")
                         # if (np.mean(train_acc) > 0.5):
-                        if (np.mean(accuracy_list) > 0.8):
+                        if (np.mean(accuracy_list) > 0.78):
                             print("training accuracy is large, show the list: {}".format(accuracy_list))
                             test_acc = sess.run(accuracy, feed_dict = {
                                                     x: images_test,
