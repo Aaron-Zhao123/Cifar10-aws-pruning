@@ -68,10 +68,10 @@ level6 = 6
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
-pcov = [10., 10.]
-pfc = [10., 10., 10.]
+pcov = [0., 0.]
+pfc = [10., 0., 0.]
+# Prune
 while (run):
-    # Prune
     param = [
         ('-pcov1',pcov[0]),
         ('-pcov2',pcov[1]),
@@ -84,6 +84,7 @@ while (run):
         ('-prune', True)
         ]
     _ = train.main(param)
+    
     # pruning saves the new models, masks
     f_name = compute_file_name(pcov, pfc)
 
