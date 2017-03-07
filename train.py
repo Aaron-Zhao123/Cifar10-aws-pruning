@@ -522,10 +522,10 @@ def main(argv = None):
         train_acc_list = []
         # Launch the graph
         print('Graph launching ..')
-        config = tf.ConfigProto()
-        config.gpu_options.per_process_gpu_memory_fraction = (0.7)
+        # config = tf.ConfigProto()
+        # config.gpu_options.per_process_gpu_memory_fraction = (0.7)
 
-        with tf.Session(config=config) as sess:
+        with tf.Session() as sess:
             sess.run(init)
 
             keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
