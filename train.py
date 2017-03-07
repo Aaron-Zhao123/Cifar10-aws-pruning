@@ -523,7 +523,7 @@ def main(argv = None):
         # Launch the graph
         print('Graph launching ..')
         config = tf.ConfigProto()
-        config.gpu_options.per_process_gpu_memory_fraction = (0.45)
+        config.gpu_options.per_process_gpu_memory_fraction = (0.7)
 
         with tf.Session(config=config) as sess:
             sess.run(init)
