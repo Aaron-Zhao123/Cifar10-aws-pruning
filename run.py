@@ -20,7 +20,7 @@ def compute_file_name(pcov, pfc):
 acc_list = []
 count = 0
 pcov = [0., 0.]
-pfc = [0., 0., 0.]
+pfc = [90., 0., 0.]
 retrain = 0
 keys_cov = ['cov1', 'cov2']
 keys_fc = ['fc1', 'fc2', 'fc3']
@@ -72,7 +72,7 @@ level6 = 6
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 0.]
-pfc = [10., 0., 0.]
+pfc = [90., 10., 0.]
 # Prune
 while (run):
     param = [
@@ -121,8 +121,9 @@ while (run):
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
-    pfc[0] = pfc[0] + 10.
-    if (pfc[0] > 90):
+    # pfc[0] = pfc[0] + 10.
+    pcov[1] = pcov[1] + 10.
+    if (pcov[1] > 30):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
