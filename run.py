@@ -22,14 +22,8 @@ count = 0
 pcov = [0., 0.]
 pfc = [90., 0., 0.]
 retrain = 0
-keys_cov = ['cov1', 'cov2']
-keys_fc = ['fc1', 'fc2', 'fc3']
-name = ''
-for key in keys_cov:
-    name += 'cov' + str(int(0))
-for key in keys_fc:
-    name += 'fc' + str(int(0))
-f_name = name
+f_name = compute_file_name(pcov, pfc)
+
 # f_name = 'pruningv00'
 # initial run
 param = [
