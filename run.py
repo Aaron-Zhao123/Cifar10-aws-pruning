@@ -66,7 +66,7 @@ level6 = 6
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 40.]
-pfc = [90., 20., 0.]
+pfc = [92., 20., 0.]
 # Prune
 while (run):
     param = [
@@ -115,9 +115,9 @@ while (run):
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
-    pfc[0] = pfc[0] + 1.
+    pcov[1] = pcov[1] + 10.
     # pcov[1] = pcov[1] + 10.
-    if (pfc[0] > 96):
+    if (acc < 0.8):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
