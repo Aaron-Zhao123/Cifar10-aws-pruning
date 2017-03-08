@@ -391,6 +391,7 @@ def main(argv = None):
         try:
             opts = argv
             first_time_load = True
+            parent_dir = './'
             keys = ['cov1', 'cov2', 'fc1', 'fc2', 'fc3']
             prune_thresholds = {}
             for key in keys:
@@ -418,6 +419,8 @@ def main(argv = None):
                     TRAIN = val
                 if (opt == '-prune'):
                     PRUNE = val
+                if (opt == '-parent_dir'):
+                    parent_dir = val
 
 
             print('pruning thresholds are {}'.format(prune_thresholds))
@@ -444,8 +447,8 @@ def main(argv = None):
             model_name = '/root/pruning'
             mask_dir = '/root/mask'
         else:
-            mask_dir = './mask/'
-            weights_dir = './weights/'
+            mask_dir = parent_dir + 'mask/'
+            weights_dir = parent_dir + 'weights/'
         # model_name = 'test.pkl'
         # model_name = '../tf_official_docker/tmp.pkl'
 
