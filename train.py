@@ -521,7 +521,7 @@ def main(argv = None):
 
 
         init = tf.global_variables_initializer()
-        accuracy_list = np.zeros(10)
+        accuracy_list = np.zeros(20)
         train_acc_list = []
         # Launch the graph
         print('Graph launching ..')
@@ -560,7 +560,7 @@ def main(argv = None):
                             cross_en
                         ))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
-                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:9]))
+                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:19]))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
                             train_acc_list.append(train_acc)
@@ -574,7 +574,7 @@ def main(argv = None):
                             #                         y: labels_test,
                             #                         keep_prob: 1.0})
                             # accuracy_list = np.zeros(30)
-                            accuracy_list = np.zeros(10)
+                            accuracy_list = np.zeros(20)
                             # print('test accuracy is {}'.format(test_acc))
                             # if (test_acc > 0.78 and first_time_load):
                             # print('Exiting the training, test accuracy is {}'.format(test_acc))
