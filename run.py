@@ -117,7 +117,7 @@ while (run):
     f_name = compute_file_name(pcov, pfc)
     pcov[1] = pcov[1] + 10.
     # pcov[1] = pcov[1] + 10.
-    if (acc < 0.8):
+    if (pcov[1] > 70.):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
