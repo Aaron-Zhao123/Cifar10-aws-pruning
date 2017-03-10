@@ -115,9 +115,10 @@ while (run):
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
-    pcov[1] = pcov[1] + 10.
     # pcov[1] = pcov[1] + 10.
-    if (pcov[1] > 70.):
+    pfc[1] = pfc[1] + 10.
+    # pcov[1] = pcov[1] + 10.
+    if (pfc[1] > 70.):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
