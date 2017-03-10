@@ -19,8 +19,8 @@ def compute_file_name(pcov, pfc):
 
 acc_list = []
 count = 0
-pcov = [0., 30.]
-pfc = [90., 10., 0.]
+pcov = [0., 60.]
+pfc = [92., 20., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 
@@ -66,7 +66,7 @@ level6 = 6
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 60.]
-pfc = [92., 20., 0.]
+pfc = [92., 30., 0.]
 # Prune
 while (run):
     param = [
