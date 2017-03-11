@@ -125,7 +125,7 @@ while (run):
         if (retrain > 5):
             break
     # pcov[1] = pcov[1] + 10.
-    if (pfc[1] > 70.):
+    if (pfc[0] > 90.):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
