@@ -53,8 +53,8 @@ while (run):
     print(hist)
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    pfc[1] = pfc[1] + 10.
-    if (pfc[1] > 90):
+    pfc[0] = pfc[0] + 10.
+    if (pfc[0] > 90):
         run = 0
     # if (working_level == level1):
     #     if (acc >= 0.8):
