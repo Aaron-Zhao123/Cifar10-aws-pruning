@@ -149,7 +149,7 @@ while (run):
                     pcov[1] = pcov[1] + 10.
                     level2 = 0
                     level3 = 1
-                if (level3 == 1)
+                if (level3 == 1):
                     pcov[1] = pcov[1] - 10.
                     pfc[0] = pfc[0] + 1.
                     level3 = 0
