@@ -21,6 +21,7 @@ f_name = compute_file_name(pcov, pfc)
 # f_name = 'pruningv00'
 # initial run
 parent_dir = '/Users/aaron/Projects/Mphil_project/tmp_cifar10/async_pruning/'
+parent_dir = './'
 
 run = 1
 hist = []
