@@ -117,7 +117,7 @@ while (run):
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    if (acc > 0.820):
+    if (acc > 0.823):
         pfc[0] = pfc[0] + 10.
         retrain = 0
     else:
@@ -161,6 +161,7 @@ while (run):
 
     acc_list.append(acc)
     count = count + 1
+    print('accuracy summary: {}'.format(acc_list))
     print (acc)
 
 print('accuracy summary: {}'.format(acc_list))
