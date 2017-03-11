@@ -51,17 +51,17 @@ param = [
     ]
 test_acc = train.main(param)
 print("first train")
-acc_list.append(test_acc)
+acc_list.append((pcov,pfc,test_acc))
 print('accuracy summary: {}'.format(acc_list))
 
 run = 1
 
 level1 = 1
-level2 = 2
-level3 = 3
-level4 = 4
-level5 = 5
-level6 = 6
+level2 = 0
+level3 = 0
+level4 = 0
+level5 = 0
+level6 = 0
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
@@ -118,12 +118,44 @@ while (run):
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.823):
-        pfc[0] = pfc[0] + 10.
+
+        if (level1 == 1):
+            pfc[1] = pfc[1] + 10.
+            level1 = 0
+            level2 = 1
+        if (level2 == 1):
+            pcov[1] = pcov[1] + 10.
+            level2 = 0
+            level3 = 1
+        if (level3 == 1):
+            pfc[0] = pfc[0] + 1.
+            level3 = 0
+            level1 = 1
         retrain = 0
+        roundrobin = 0
+        acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
         if (retrain > 5):
-            break
+            roundrobin = roundrobin + 1
+            if (roundrobin != 0):
+                if (level1 == 1):
+                    pfc[0] = pfc[0] - 1.
+                    pfc[1] = pfc[1] + 10.
+                    level2 = 1
+                    level1 = 0
+                if (level2 == 1):
+                    pfc[1] = pfc[1] - 10.
+                    pcov[1] = pcov[1] + 10.
+                    level2 = 0
+                    level3 = 1
+                if (level3 == 1)
+                    pcov[1] = pcov[1] - 10.
+                    pfc[0] = pfc[0] + 1.
+                    level3 = 0
+                    level1 = 1
+            if (roundrobin > 2):
+                break
     # pcov[1] = pcov[1] + 10.
     if (pfc[0] > 90.):
         run = 0
@@ -159,7 +191,6 @@ while (run):
     #
     #
 
-    acc_list.append(acc)
     count = count + 1
     print('accuracy summary: {}'.format(acc_list))
     print (acc)
