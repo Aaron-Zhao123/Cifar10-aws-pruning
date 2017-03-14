@@ -140,7 +140,8 @@ while (run):
         acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
-        if (retrain > 5):
+        # if (retrain > 5):
+        if (retrain > 1):
             roundrobin = roundrobin + 1
             if (roundrobin != 0):
                 if (level1 == 1):
