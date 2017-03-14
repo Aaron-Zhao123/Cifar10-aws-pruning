@@ -66,7 +66,7 @@ level6 = 0
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 40.]
-pfc = [86., 40., 0.]
+pfc = [85., 40., 0.]
 retrain_cnt = 0
 roundrobin = 0
 # Prune
