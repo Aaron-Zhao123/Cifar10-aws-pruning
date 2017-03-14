@@ -121,11 +121,14 @@ while (run):
     if (acc > 0.823):
 
         if (level1 == 1):
-            pfc[0] = pfc[0] + 1.
-        if (level2 == 1):
             pfc[1] = pfc[1] + 10.
-        if (level3 == 1):
+            # pfc[0] = pfc[0] + 1.
+        if (level2 == 1):
+            # pfc[1] = pfc[1] + 10.
             pcov[1] = pcov[1] + 10.
+        if (level3 == 1):
+            # pcov[1] = pcov[1] + 10.
+            pfc[0] = pfc[0] + 1.
         if (level1 == 1):
             level1 = 0
             level2 = 1
@@ -140,8 +143,8 @@ while (run):
         acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
-        # if (retrain > 5):
-        if (retrain > 1):
+        if (retrain > 5):
+        # if (retrain > 1):
             roundrobin = roundrobin + 1
             if (roundrobin != 0):
                 if (level1 == 1):
