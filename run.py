@@ -121,10 +121,10 @@ while (run):
     if (acc > 0.823):
 
         if (level1 == 1):
-            pfc[1] = pfc[1] + 10.
-        if (level3 == 1):
             pfc[0] = pfc[0] + 1.
         if (level2 == 1):
+            pfc[1] = pfc[1] + 10.
+        if (level3 == 1):
             pcov[1] = pcov[1] + 10.
         if (level1 == 1):
             level1 = 0
