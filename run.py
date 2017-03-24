@@ -36,7 +36,8 @@ param = [
     ('-first_time', False),
     ('-file_name', f_name),
     ('-train', True),
-    ('-prune', False)
+    ('-prune', False),
+    ('-lr', lr)
     ]
 # acc = train.main(param)
 param = [
@@ -48,7 +49,8 @@ param = [
     ('-first_time', False),
     ('-file_name', f_name),
     ('-train', False),
-    ('-prune', False)
+    ('-prune', False),
+    ('-lr', lr)
     ]
 test_acc = train.main(param)
 print("first train")
