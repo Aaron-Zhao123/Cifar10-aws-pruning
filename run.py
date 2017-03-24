@@ -23,6 +23,7 @@ pcov = [0., 0.]
 pfc = [0., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
+lr = 1e-4
 
 # f_name = 'pruningv00'
 # initial run
@@ -66,7 +67,7 @@ level6 = 0
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 0.]
-pfc = [5., 0., 0.]
+pfc = [85., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
 # Prune
@@ -80,7 +81,8 @@ while (run):
         ('-first_time', False),
         ('-file_name', f_name),
         ('-train', False),
-        ('-prune', True)
+        ('-prune', True),
+        ('-lr', lr)
         ]
     _ = train.main(param)
 
@@ -97,7 +99,8 @@ while (run):
         ('-first_time', False),
         ('-file_name', f_name),
         ('-train', True),
-        ('-prune', False)
+        ('-prune', False),
+        ('-lr', lr)
         ]
     _ = train.main(param)
 
@@ -112,14 +115,16 @@ while (run):
         ('-first_time', False),
         ('-file_name', f_name),
         ('-train', False),
-        ('-prune', False)
+        ('-prune', False),
+        ('-lr', lr)
         ]
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.823):
-        pfc[0] = pfc[0] + 10.
+        pfc[0] = pfc[0] + 5.
+        lr = 1e-4
         # if (level1 == 1):
         #     pfc[1] = pfc[1] + 10.
         #     # pfc[0] = pfc[0] + 1.
@@ -143,6 +148,7 @@ while (run):
         acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
+        lr = lr / float(2)
         if (retrain > 5):
             break
         # if (retrain > 1):

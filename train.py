@@ -421,6 +421,8 @@ def main(argv = None):
                     PRUNE = val
                 if (opt == '-parent_dir'):
                     parent_dir = val
+                if (opt == '-lr'):
+                    lr = val
 
 
             print('pruning thresholds are {}'.format(prune_thresholds))
@@ -502,16 +504,17 @@ def main(argv = None):
         global_step = tf.contrib.framework.get_or_create_global_step()
 
         num_batches_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN / BATCH_SIZE
-        decay_steps = int(num_batches_per_epoch * NUM_EPOCHS_PER_DECAY)
+        # decay_steps = int(num_batches_per_epoch * NUM_EPOCHS_PER_DECAY)
 
         # Decay the learning rate exponentially based on the number of steps.
-        lr = tf.train.exponential_decay(INITIAL_LEARNING_RATE,
-                                      global_step,
-                                      decay_steps,
-                                      LEARNING_RATE_DECAY_FACTOR,
-                                      staircase=True)
-
-        opt = tf.train.GradientDescentOptimizer(lr)
+        # lr = tf.train.exponential_decay(INITIAL_LEARNING_RATE,
+        #                               global_step,
+        #                               decay_steps,
+        #                               LEARNING_RATE_DECAY_FACTOR,
+        #                               staircase=True)
+        #
+        # opt = tf.train.GradientDescentOptimizer(lr)
+        opt = tf.train.AdamOptimizer(lr)
         grads = opt.compute_gradients(loss_value)
         org_grads = [(ClipIfNotNone(grad), var) for grad, var in grads]
         new_grads = mask_gradients(weights, org_grads, weights_mask, biases, biases_mask)
