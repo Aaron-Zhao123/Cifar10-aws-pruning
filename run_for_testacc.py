@@ -13,8 +13,8 @@ def compute_file_name(pcov, pfc):
 
 acc_list = []
 count = 0
-pcov = [0., 40.]
-pfc = [85., 40., 0.]
+pcov = [0., 0.]
+pfc = [85., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 
@@ -25,6 +25,7 @@ parent_dir = ''
 
 run = 1
 hist = []
+lr = 1e-5
 # # pcov = [0., 40.]
 # pcov = [0., 0.]
 # # pfc = [90., 20., 0.]
@@ -45,7 +46,8 @@ while (run):
         ('-file_name', f_name),
         ('-train', False),
         ('-prune', False),
-        ('-parent_dir', parent_dir)
+        ('-parent_dir', parent_dir),
+        ('-lr', lr)
         ]
     acc = train.main(param)
     hist.append((pcov[:], pfc[:], acc))
