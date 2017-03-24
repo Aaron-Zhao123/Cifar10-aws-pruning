@@ -19,8 +19,8 @@ def compute_file_name(pcov, pfc):
 
 acc_list = []
 count = 0
-pcov = [0., 40.]
-pfc = [85., 40., 0.]
+pcov = [0., 0.]
+pfc = [0., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 
@@ -65,8 +65,8 @@ level6 = 0
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
-pcov = [0., 40.]
-pfc = [85., 40., 0.]
+pcov = [0., 0.]
+pfc = [5., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
 # Prune
@@ -119,54 +119,54 @@ while (run):
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.823):
-
-        if (level1 == 1):
-            pfc[1] = pfc[1] + 10.
-            # pfc[0] = pfc[0] + 1.
-        if (level2 == 1):
-            # pfc[1] = pfc[1] + 10.
-            pcov[1] = pcov[1] + 10.
-        if (level3 == 1):
-            # pcov[1] = pcov[1] + 10.
-            pfc[0] = pfc[0] + 1.
-        if (level1 == 1):
-            level1 = 0
-            level2 = 1
-        if (level2 == 1):
-            level2 = 0
-            level3 = 1
-        if (level3 == 1):
-            level3 = 0
-            level1 = 1
+        pfc[0] = pfc[0] + 10.
+        # if (level1 == 1):
+        #     pfc[1] = pfc[1] + 10.
+        #     # pfc[0] = pfc[0] + 1.
+        # if (level2 == 1):
+        #     # pfc[1] = pfc[1] + 10.
+        #     pcov[1] = pcov[1] + 10.
+        # if (level3 == 1):
+        #     # pcov[1] = pcov[1] + 10.
+        #     pfc[0] = pfc[0] + 1.
+        # if (level1 == 1):
+        #     level1 = 0
+        #     level2 = 1
+        # if (level2 == 1):
+        #     level2 = 0
+        #     level3 = 1
+        # if (level3 == 1):
+        #     level3 = 0
+        #     level1 = 1
         retrain = 0
         roundrobin = 0
         acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
         if (retrain > 5):
+            break
         # if (retrain > 1):
-            roundrobin = roundrobin + 1
-            if (roundrobin != 0):
-                if (level1 == 1):
-                    pfc[0] = pfc[0] - 1.
-                    pfc[1] = pfc[1] + 10.
-                if (level2 == 1):
-                    pfc[1] = pfc[1] - 10.
-                    pcov[1] = pcov[1] + 10.
-                if (level3 == 1):
-                    pcov[1] = pcov[1] - 10.
-                    pfc[0] = pfc[0] + 1.
-                if (level1 == 1):
-                    level2 = 1
-                    level1 = 0
-                if (level2 == 1):
-                    level2 = 0
-                    level3 = 1
-                if (level3 == 1):
-                    level3 = 0
-                    level1 = 1
-            if (roundrobin > 2):
-                break
+            # roundrobin = roundrobin + 1
+            # if (roundrobin != 0):
+            #     if (level1 == 1):
+            #         pfc[0] = pfc[0] - 1.
+            #         pfc[1] = pfc[1] + 10.
+            #     if (level2 == 1):
+            #         pfc[1] = pfc[1] - 10.
+            #         pcov[1] = pcov[1] + 10.
+            #     if (level3 == 1):
+            #         pcov[1] = pcov[1] - 10.
+            #         pfc[0] = pfc[0] + 1.
+            #     if (level1 == 1):
+            #         level2 = 1
+            #         level1 = 0
+            #     if (level2 == 1):
+            #         level2 = 0
+            #         level3 = 1
+            #     if (level3 == 1):
+            #         level3 = 0
+            #         level1 = 1
+            # if (roundrobin > 2):
     # pcov[1] = pcov[1] + 10.
     # if (pfc[0] > 90.):
     #     run = 0
