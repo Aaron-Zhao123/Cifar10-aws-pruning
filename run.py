@@ -55,7 +55,7 @@ param = [
     ]
 test_acc = train.main(param)
 print("first train")
-acc_list.append((pcov,pfc,test_acc))
+acc_list.append((pcov[:],pfc[:],test_acc))
 print('accuracy summary: {}'.format(acc_list))
 
 run = 1
@@ -125,7 +125,7 @@ while (run):
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    if (acc > 0.823):
+    if (acc > 0.82):
         pfc[0] = pfc[0] + 10.
         lr = 1e-5
         lr = 0.0001
