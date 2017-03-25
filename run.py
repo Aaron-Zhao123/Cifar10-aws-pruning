@@ -70,7 +70,7 @@ level6 = 0
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 0.]
-pfc = [70., 0., 0.]
+pfc = [80., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
 # Prune
@@ -152,7 +152,7 @@ while (run):
         acc_list.append((pcov,pfc,acc))
     else:
         retrain = retrain + 1
-        if (retrain == 8):
+        if (retrain == 5):
             lr = lr / float(10)
         if (retrain == 10):
             lr = lr / float(10)

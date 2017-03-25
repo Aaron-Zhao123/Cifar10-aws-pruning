@@ -525,7 +525,7 @@ def main(argv = None):
 
 
         init = tf.global_variables_initializer()
-        accuracy_list = np.zeros(30)
+        accuracy_list = np.zeros(50)
         # accuracy_list = np.zeros(5)
         train_acc_list = []
         # Launch the graph
@@ -564,7 +564,7 @@ def main(argv = None):
                             train_acc,
                             cross_en
                         ))
-                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:29]))
+                        accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:49]))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:19]))
                         # accuracy_list = np.concatenate((np.array([train_acc]),accuracy_list[0:4]))
                         if (i%(DISPLAY_FREQ*50) == 0 and i != 0 ):
