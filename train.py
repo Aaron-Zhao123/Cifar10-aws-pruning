@@ -433,6 +433,7 @@ def main(argv = None):
         BATCH_SIZE = 128
         NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
         INITIAL_LEARNING_RATE = 0.001
+        INITIAL_LEARNING_RATE = lr 
         LEARNING_RATE_DECAY_FACTOR = 0.1
         NUM_EPOCHS_PER_DECAY = 350.0
         MOVING_AVERAGE_DECAY = 0.9999     # The decay to use for the moving average.
