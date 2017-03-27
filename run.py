@@ -23,8 +23,8 @@ pcov = [0., 0.]
 pfc = [80., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
-lr = 1e-5
-lr = 0.0001
+# lr = 1e-5
+lr = 0.001
 
 # f_name = 'pruningv00'
 # initial run
@@ -127,7 +127,7 @@ while (run):
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.82):
         pfc[0] = pfc[0] + 10.
-        lr = 1e-5
+        # lr = 1e-5
         lr = 0.0001
         # if (level1 == 1):
         #     pfc[1] = pfc[1] + 10.
