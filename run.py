@@ -70,7 +70,7 @@ level6 = 0
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 0.]
-pfc = [80., 0., 0.]
+pfc = [85., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
 # Prune
@@ -125,7 +125,7 @@ while (run):
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    if (acc > 0.82):
+    if (acc > 0.8235):
         pfc[0] = pfc[0] + 10.
         # lr = 1e-5
         lr = 0.0001
