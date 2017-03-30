@@ -24,7 +24,7 @@ pfc = [85., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 # lr = 1e-5
-lr = 0.001
+lr = 0.0001
 
 # f_name = 'pruningv00'
 # initial run
@@ -125,8 +125,8 @@ while (run):
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    if (acc > 0.8235):
-        pfc[0] = pfc[0] + 10.
+    if (acc > 0.823):
+        pfc[0] = pfc[0] + 5.
         # lr = 1e-5
         lr = 0.0001
         # if (level1 == 1):
