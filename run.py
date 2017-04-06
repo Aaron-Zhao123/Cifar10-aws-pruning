@@ -23,8 +23,9 @@ pcov = [0., 0.]
 pfc = [85., 0., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
+parent_dir = 'assets/withbiases/'
 # lr = 1e-5
-lr = 0.0001
+lr = 1e-4
 
 # f_name = 'pruningv00'
 # initial run
@@ -38,7 +39,9 @@ param = [
     ('-file_name', f_name),
     ('-train', True),
     ('-prune', False),
-    ('-lr', lr)
+    ('-lr', lr),
+    ('-with_biases', True),
+    ('-parent_dir', parent_dir)
     ]
 # acc = train.main(param)
 param = [
@@ -51,7 +54,9 @@ param = [
     ('-file_name', f_name),
     ('-train', False),
     ('-prune', False),
-    ('-lr', lr)
+    ('-lr', lr),
+    ('-with_biases', True),
+    ('-parent_dir', parent_dir)
     ]
 test_acc = train.main(param)
 print("first train")
@@ -73,6 +78,7 @@ pcov = [0., 0.]
 pfc = [85., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
+with_biases = True
 # Prune
 while (run):
     param = [
@@ -85,7 +91,9 @@ while (run):
         ('-file_name', f_name),
         ('-train', False),
         ('-prune', True),
-        ('-lr', lr)
+        ('-lr', lr),
+        ('-with_biases', with_biases),
+        ('-parent_dir', parent_dir)
         ]
     _ = train.main(param)
 
@@ -103,7 +111,9 @@ while (run):
         ('-file_name', f_name),
         ('-train', True),
         ('-prune', False),
-        ('-lr', lr)
+        ('-lr', lr),
+        ('-with_biases', with_biases),
+        ('-parent_dir', parent_dir)
         ]
     _ = train.main(param)
 
@@ -119,7 +129,9 @@ while (run):
         ('-file_name', f_name),
         ('-train', False),
         ('-prune', False),
-        ('-lr', lr)
+        ('-lr', lr),
+        ('-with_biases', with_biases),
+        ('-parent_dir', parent_dir)
         ]
     acc = train.main(param)
     hist.append((pcov, pfc, acc))
@@ -127,26 +139,7 @@ while (run):
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.823):
         pfc[0] = pfc[0] + 5.
-        # lr = 1e-5
-        lr = 0.0001
-        # if (level1 == 1):
-        #     pfc[1] = pfc[1] + 10.
-        #     # pfc[0] = pfc[0] + 1.
-        # if (level2 == 1):
-        #     # pfc[1] = pfc[1] + 10.
-        #     pcov[1] = pcov[1] + 10.
-        # if (level3 == 1):
-        #     # pcov[1] = pcov[1] + 10.
-        #     pfc[0] = pfc[0] + 1.
-        # if (level1 == 1):
-        #     level1 = 0
-        #     level2 = 1
-        # if (level2 == 1):
-        #     level2 = 0
-        #     level3 = 1
-        # if (level3 == 1):
-        #     level3 = 0
-        #     level1 = 1
+        lr = 1e-4
         retrain = 0
         roundrobin = 0
         acc_list.append((pcov,pfc,acc))
@@ -158,24 +151,6 @@ while (run):
             lr = lr / float(10)
         if (retrain > 15):
             break
-        # if (retrain > 1):
-            # roundrobin = roundrobin + 1
-            # if (roundrobin != 0):
-            #     if (level1 == 1):
-            #         pfc[0] = pfc[0] - 1.
-            #         pfc[1] = pfc[1] + 10.
-            #     if (level2 == 1):
-            #         pfc[1] = pfc[1] - 10.
-            #         pcov[1] = pcov[1] + 10.
-            #     if (level3 == 1):
-            #         pcov[1] = pcov[1] - 10.
-            #         pfc[0] = pfc[0] + 1.
-            #     if (level1 == 1):
-            #         level2 = 1
-            #         level1 = 0
-            #     if (level2 == 1):
-            #         level2 = 0
-            #         level3 = 1
             #     if (level3 == 1):
             #         level3 = 0
             #         level1 = 1
@@ -213,8 +188,6 @@ while (run):
     #         run = 0
     #         print('finished')
     #
-    #
-
     count = count + 1
     print('accuracy summary: {}'.format(acc_list))
     print (acc)
