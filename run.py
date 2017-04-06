@@ -75,7 +75,7 @@ level6 = 0
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
 pcov = [0., 0.]
-pfc = [85., 0., 0.]
+pfc = [0., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
 with_biases = True
@@ -138,7 +138,7 @@ while (run):
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
     if (acc > 0.823):
-        pfc[0] = pfc[0] + 5.
+        pfc[0] = pfc[0] + 10.
         lr = 1e-4
         retrain = 0
         roundrobin = 0
