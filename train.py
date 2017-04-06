@@ -608,7 +608,7 @@ def main(argv = None):
             print("test accuracy is {}".format(test_acc))
             if (TRAIN):
                 save_pkl_model(weights, biases, weights_dir, 'weights' + file_name + '.pkl')
-                with open('t_data/'+'training_data'+file_name+'.pkl', 'wb') as f:
+                with open(parent_dir + 't_data/'+'training_data'+file_name+'.pkl', 'wb') as f:
                     pickle.dump(train_acc_list, f)
 
             if (PRUNE):
