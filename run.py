@@ -19,8 +19,8 @@ def compute_file_name(pcov, pfc):
 
 acc_list = []
 count = 0
-pcov = [0., 0.]
-pfc = [85., 0., 0.]
+pcov = [0., 60.]
+pfc = [85., 60., 0.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 parent_dir = 'assets/withbiases/'
@@ -74,8 +74,8 @@ level6 = 0
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
-pcov = [0., 10.]
-pfc = [85., 10., 0.]
+pcov = [0., 65.]
+pfc = [85., 65., 0.]
 retrain_cnt = 0
 roundrobin = 0
 with_biases = True
@@ -140,8 +140,10 @@ while (run):
     if (acc > 0.823):
         # pfc[0] = pfc[0] + 10.
         # pfc[0] = pfc[0] + 1.
-        pfc[1] = pfc[1] + 10.
-        pcov[1] = pcov[1] + 10.
+        # pfc[1] = pfc[1] + 10.
+        # pcov[1] = pcov[1] + 10.
+        pfc[1] = pfc[1] + 5.
+        pcov[1] = pcov[1] + 5.
         lr = 1e-4
         retrain = 0
         roundrobin = 0
