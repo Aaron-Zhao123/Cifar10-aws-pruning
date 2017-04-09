@@ -29,6 +29,7 @@ lr = 1e-4
 
 # f_name = 'pruningv00'
 # initial run
+with_biases = False
 param = [
     ('-pcov1',pcov[0]),
     ('-pcov2',pcov[1]),
@@ -78,7 +79,6 @@ pcov = [0., 0.]
 pfc = [10., 0., 0.]
 retrain_cnt = 0
 roundrobin = 0
-with_biases = False
 # Prune
 while (run):
     param = [
