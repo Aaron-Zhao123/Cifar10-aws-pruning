@@ -545,6 +545,7 @@ def main(argv = None):
             for key in keys:
                 sess.run(weights[key].assign(weights[key].eval()*weights_mask[key]))
                 if (WITH_BIASES == True):
+                    print("Pruning biases as well")
                     sess.run(biases[key].assign(biases[key].eval()*biases_mask[key]))
 
             print('pre train pruning info')
