@@ -142,8 +142,8 @@ while (run):
         # pfc[0] = pfc[0] + 1.
         # pfc[1] = pfc[1] + 10.
         # pcov[1] = pcov[1] + 10.
-        pfc[1] = pfc[1] + 1.
-        pcov[1] = pcov[1] + 1.
+        pfc[2] = pfc[2] + 1.
+        pcov[0] = pcov[0] + 1.
         lr = 1e-4
         retrain = 0
         roundrobin = 0
