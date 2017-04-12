@@ -359,7 +359,7 @@ def mask_gradients(weights, grads_and_names, weight_masks, biases, biases_mask, 
                 mask = weight_masks[key]
                 new_grads.append((tf.multiply(tf.constant(mask, dtype = tf.float32),grad),var_name))
                 flag = 1
-            if (weights[key]== var_name and WITH_BIASES == True):
+            if (biases[key]== var_name and WITH_BIASES == True):
                 mask = biases_mask[key]
                 new_grads.append((tf.multiply(tf.constant(mask, dtype = tf.float32),grad),var_name))
                 flag = 1
