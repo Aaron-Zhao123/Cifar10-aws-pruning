@@ -459,7 +459,6 @@ def main(argv = None):
         # model_name = '../tf_official_docker/tmp.pkl'
 
 
-
         (weights_mask,biases_mask)= initialize_weights_mask(first_time_load, mask_dir, 'mask'+file_name + '.pkl')
         cifar10.maybe_download_and_extract()
         class_names = cifar10.load_class_names()
