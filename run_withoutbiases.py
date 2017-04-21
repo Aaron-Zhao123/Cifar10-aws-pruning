@@ -19,8 +19,8 @@ def compute_file_name(pcov, pfc):
 
 acc_list = []
 count = 0
-pcov = [10., 66.]
-pfc = [85., 66., 10.]
+pcov = [10., 69.]
+pfc = [85., 69., 10.]
 retrain = 0
 f_name = compute_file_name(pcov, pfc)
 parent_dir = 'assets/withoutbiases/'
@@ -75,8 +75,8 @@ level6 = 0
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
-pcov = [10., 67.]
-pfc = [85., 67., 10.]
+pcov = [20., 69.]
+pfc = [85., 69., 20.]
 retrain_cnt = 0
 # Prune
 while (run):
@@ -136,11 +136,12 @@ while (run):
     hist.append((pcov, pfc, acc))
     f_name = compute_file_name(pcov, pfc)
     # pcov[1] = pcov[1] + 10.
-    if (acc > 0.823):
+    if (acc >= 0.823):
         # pfc[0] = pfc[0] + 1.
         # pfc[0] = pfc[0] + 1.
-        pfc[1] = pfc[1] + 1.
-        pcov[1] = pcov[1] + 1.
+        # pfc[1] = pfc[1] + 1.
+        pcov[0] = pcov[0] + 10.
+        pfc[2] = pfc[2] + 10.
         lr = 1e-4
         retrain = 0
         roundrobin = 0
