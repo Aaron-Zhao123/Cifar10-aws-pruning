@@ -75,8 +75,8 @@ level6 = 0
 
 working_level = level1
 hist = [(pcov, pfc, test_acc)]
-pcov = [20., 69.]
-pfc = [86., 69., 20.]
+pcov = [40., 69.]
+pfc = [86., 69., 40.]
 retrain_cnt = 0
 # Prune
 while (run):
